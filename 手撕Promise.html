@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手撕Promise</title>
+    <script src="./Promise.js"></script>
+</head>
+<body>
+    <script>
+        const p = new Promise((resolve,reject)=>{
+            resolve('ok');
+        })
+
+        console.log(p);
+        p.then(res => {
+            console.log(res);
+        }, err => {
+            console.log(err);
+        })
+    </script>
+</body>
+</html>

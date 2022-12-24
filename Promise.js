@@ -1,6 +1,6 @@
 function Promise(executer) {
-    this.PromiseState = 'pending';
-    this.PromiseResult = undefined;
+    this.PromiseState = 'pending';//默认应该是等待
+    this.PromiseResult = undefined; 
     //参数executer是一个立即调用的函数
     //且该函数还接收两个参数，分别是两个函数
     const success = (data) => {

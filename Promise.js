@@ -5,6 +5,8 @@ function Promise(executer) {
     //且该函数还接收两个参数，分别是两个函数
     const success = (data) => {
         //这是resolve对应的回调
+        //状态改变后就不能再变，加个判断
+        if(this.PromiseState !== 'pending') return;
         //1.改变对象的状态：pending=>resolved
         this.PromiseState = 'resolved';
         //2.改变对象的结果值
@@ -13,6 +15,8 @@ function Promise(executer) {
 
     const fail = (data) => {
         //这是reject对应的回调
+        //状态改变后就不能再变，加个判断
+        if(this.PromiseState !== 'pending') return;
         //1.改变对象的状态：pending=>resolved
         this.PromiseState = 'rejected';
         //2.改变对象的结果值

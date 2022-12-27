@@ -33,5 +33,11 @@ function Promise(executer) {
 
 //1.then方法的封装
 Promise.prototype.then = function (onResolved, onRejected) {
-
+    //判断走哪个回调
+    if(this.PromiseState === 'resolved') {
+        onResolved(this.PromiseResult);
+    }
+    if(this.PromiseState === 'rejected') {
+        onRejected(this.PromiseResult);
+    }
 }

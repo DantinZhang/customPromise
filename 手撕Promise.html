@@ -10,7 +10,9 @@
 <body>
     <script>
         const p = new Promise((resolve,reject)=>{
-            resolve('ok');
+            // resolve('ok');
+            // reject('notok');
+            throw 'error';
         })
 
         console.log(p);

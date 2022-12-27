@@ -1,6 +1,6 @@
 function Promise(executer) {
     this.PromiseState = 'pending';//默认应该是等待
-    this.PromiseResult = undefined; 
+    this.PromiseResult = undefined;
     //参数executer是一个立即调用的函数
     //且该函数还接收两个参数，分别是两个函数
     const success = (data) => {
@@ -19,7 +19,12 @@ function Promise(executer) {
         this.PromiseResult = data;
     }
 
-    executer(success, fail);
+    try {
+        executer(success, fail);
+    } catch(data) {
+        //如果抛出错误，那么就执行下面的代码
+        fail(data);
+    }
 }
 
 //1.then方法的封装

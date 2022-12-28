@@ -1,8 +1,8 @@
 function Promise(executer) {
     this.PromiseState = 'pending';//默认应该是等待
     this.PromiseResult = undefined;
-    //定义一个属性来存放then函数的回调
-    this.callback = {};
+    //定义一个属性来存放then函数的回调们
+    this.callbacks = [];
 
     //参数executer是一个立即调用的函数
     //且该函数还接收两个参数，分别是两个函数
@@ -15,8 +15,13 @@ function Promise(executer) {
         //2.改变对象的结果值
         this.PromiseResult = data;
         //3.如果是异步，要在以上步骤结束后，执行对应的回调
-        if(this.callback.onResolved){
-            this.callback.onResolved(data);
+        // if(this.callback.onResolved){
+            // this.callback.onResolved(data);
+        // }
+        if(this.callbacks.length != 0) {
+            this.callbacks.forEach(item => {
+                item.onResolved(data);
+            })
         }
     }
 
@@ -29,8 +34,13 @@ function Promise(executer) {
         //2.改变对象的结果值
         this.PromiseResult = data;
         //3.如果是异步，要在以上步骤结束后，执行对应的回调
-        if(this.callback.onRejected) {
-            this.callback.onRejected(data);
+        // if(this.callback.onRejected) {
+            // this.callback.onRejected(data);
+        // }
+        if(this.callbacks.length != 0) {
+            this.callbacks.forEach(item => {
+                item.onRejected(data);
+            })
         }
     }
 
@@ -54,7 +64,11 @@ Promise.prototype.then = function (onResolved, onRejected) {
     //如果是异步任务（先指定回调再改变状态再执行回调）
     if (this.PromiseState === 'pending') {
         //把回调存到该实例的属性上
-        this.callback.onResolved = onResolved;
-        this.callback.onRejected = onRejected;
+        // this.callback.onResolved = onResolved;
+        // this.callback.onRejected = onRejected;
+        this.callbacks.push({
+            onResolved: onResolved,
+            onRejected   //简写
+        })
     }
 }

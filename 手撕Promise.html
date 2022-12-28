@@ -10,12 +10,13 @@
 <body>
     <script>
         const p = new Promise((resolve,reject)=>{
-            resolve('ok');
-            reject('notok');
+            setTimeout(() => {
+                resolve('ok');
+            }, 1000);
+            // reject('notok');
             // throw 'error';
         })
 
-        console.log(p);
         p.then(res => {
             console.log(res);
         }, err => {

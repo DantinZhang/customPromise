@@ -20,7 +20,7 @@ function Promise(executer) {
         // }
         if (this.callbacks.length != 0) {
             this.callbacks.forEach(item => {
-                item.onResolved(data);
+                item.onResolved();
             })
         }
     }
@@ -39,7 +39,7 @@ function Promise(executer) {
         // }
         if (this.callbacks.length != 0) {
             this.callbacks.forEach(item => {
-                item.onRejected(data);
+                item.onRejected();
             })
         }
     }
@@ -94,8 +94,38 @@ Promise.prototype.then = function (onResolved, onRejected) {
             // this.callback.onResolved = onResolved;
             // this.callback.onRejected = onRejected;
             this.callbacks.push({
-                onResolved: onResolved,
-                onRejected   //简写
+                onResolved: () => {
+                    try {
+                        const overcome = onResolved(this.PromiseResult);
+                        if (overcome instanceof Promise) {
+                            overcome.then(res => {
+                                resolve(res);
+                            }, err => {
+                                reject(err);
+                            })
+                        } else {
+                            reject(overcome);
+                        }
+                    } catch (e) {
+                        reject(e);
+                    }
+                },
+                onRejected: () => {
+                    try {
+                        const overcome = onRejected(this.PromiseResult);
+                        if (overcome instanceof Promise) {
+                            overcome.then(res => {
+                                resolve(res);
+                            }, err => {
+                                reject(err);
+                            })
+                        } else {
+                            reject(overcome);
+                        }
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
             })
         }
     })

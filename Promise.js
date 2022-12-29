@@ -16,9 +16,9 @@ function Promise(executer) {
         this.PromiseResult = data;
         //3.如果是异步，要在以上步骤结束后，执行对应的回调
         // if(this.callback.onResolved){
-            // this.callback.onResolved(data);
+        // this.callback.onResolved(data);
         // }
-        if(this.callbacks.length != 0) {
+        if (this.callbacks.length != 0) {
             this.callbacks.forEach(item => {
                 item.onResolved(data);
             })
@@ -35,9 +35,9 @@ function Promise(executer) {
         this.PromiseResult = data;
         //3.如果是异步，要在以上步骤结束后，执行对应的回调
         // if(this.callback.onRejected) {
-            // this.callback.onRejected(data);
+        // this.callback.onRejected(data);
         // }
-        if(this.callbacks.length != 0) {
+        if (this.callbacks.length != 0) {
             this.callbacks.forEach(item => {
                 item.onRejected(data);
             })
@@ -54,21 +54,40 @@ function Promise(executer) {
 
 //1.then方法的封装
 Promise.prototype.then = function (onResolved, onRejected) {
-    //判断同步任务下走哪个回调
-    if (this.PromiseState === 'resolved') {
-        onResolved(this.PromiseResult);
-    }
-    if (this.PromiseState === 'rejected') {
-        onRejected(this.PromiseResult);
-    }
-    //如果是异步任务（先指定回调再改变状态再执行回调）
-    if (this.PromiseState === 'pending') {
-        //把回调存到该实例的属性上
-        // this.callback.onResolved = onResolved;
-        // this.callback.onRejected = onRejected;
-        this.callbacks.push({
-            onResolved: onResolved,
-            onRejected   //简写
-        })
-    }
+    //执行then方法返回的还是Promise
+    return new Promise((resolve, reject) => {
+        //判断同步任务下走哪个回调
+        if (this.PromiseState === 'resolved') {
+            const outcome = onResolved(this.PromiseResult);
+            //判断回调返回结果是否是Promise类型
+            if(outcome instanceof Promise) {
+                //Promise类型的数据，返回状态要和它一致
+                outcome.then(res => {
+                    //如果是成功的Promise，那一定会走这个回调
+                    resolve(res);
+                }, err => {
+                    //如果是失败的Promise，那一定会走这个回调
+                    reject(err);
+                })
+            }else {
+                //非Promise类型，返回成功的Promise
+                resolve(outcome);
+            }
+            //如果抛出错误,不用再另外写try-catch,封装时写过了
+            //所以任何Promise实例执行器函数出现错误，都可以直接捕获
+        }
+        if (this.PromiseState === 'rejected') {
+            onRejected(this.PromiseResult);
+        }
+        //如果是异步任务（先指定回调再改变状态再执行回调）
+        if (this.PromiseState === 'pending') {
+            //把回调存到该实例的属性上
+            // this.callback.onResolved = onResolved;
+            // this.callback.onRejected = onRejected;
+            this.callbacks.push({
+                onResolved: onResolved,
+                onRejected   //简写
+            })
+        }
+    })
 }

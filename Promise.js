@@ -56,37 +56,36 @@ function Promise(executer) {
 Promise.prototype.then = function (onResolved, onRejected) {
     //执行then方法返回的还是Promise
     return new Promise((resolve, reject) => {
+        //公共的改变返回Promise状态的方法封装起来
+        let changeState = (name) => {
+            try {
+                const outcome = name(this.PromiseResult);
+                //判断回调返回结果是否是Promise类型
+                if (outcome instanceof Promise) {
+                    //Promise类型的数据，返回状态要和它一致
+                    outcome.then(res => {
+                        //如果是成功的Promise，那一定会走这个回调
+                        resolve(res);
+                    }, err => {
+                        //如果是失败的Promise，那一定会走这个回调
+                        reject(err);
+                    })
+                } else {
+                    //非Promise类型，返回成功的Promise
+                    resolve(outcome);
+                }
+            } catch (e) {
+                reject(e);
+            }
+        }
         //判断同步任务下走哪个回调
         if (this.PromiseState === 'resolved') {
-            const outcome = onResolved(this.PromiseResult);
-            //判断回调返回结果是否是Promise类型
-            if (outcome instanceof Promise) {
-                //Promise类型的数据，返回状态要和它一致
-                outcome.then(res => {
-                    //如果是成功的Promise，那一定会走这个回调
-                    resolve(res);
-                }, err => {
-                    //如果是失败的Promise，那一定会走这个回调
-                    reject(err);
-                })
-            } else {
-                //非Promise类型，返回成功的Promise
-                resolve(outcome);
-            }
+            changeState(onResolved);
             //如果抛出错误,不用再另外写try-catch,封装时写过了
             //所以任何Promise实例执行器函数出现错误，都可以直接捕获
         }
         if (this.PromiseState === 'rejected') {
-            const outcome = onRejected(this.PromiseResult);
-            if (outcome instanceof Promise) {
-                outcome.then(res => {
-                    resolve(res);
-                }, err => {
-                    reject(err);
-                })
-            } else {
-                resolve(outcome);
-            }
+            changeState(onRejected);
         }
         //如果是异步任务（先指定回调再改变状态再执行回调）
         if (this.PromiseState === 'pending') {
@@ -95,36 +94,10 @@ Promise.prototype.then = function (onResolved, onRejected) {
             // this.callback.onRejected = onRejected;
             this.callbacks.push({
                 onResolved: () => {
-                    try {
-                        const overcome = onResolved(this.PromiseResult);
-                        if (overcome instanceof Promise) {
-                            overcome.then(res => {
-                                resolve(res);
-                            }, err => {
-                                reject(err);
-                            })
-                        } else {
-                            reject(overcome);
-                        }
-                    } catch (e) {
-                        reject(e);
-                    }
+                    changeState(onResolved);
                 },
                 onRejected: () => {
-                    try {
-                        const overcome = onRejected(this.PromiseResult);
-                        if (overcome instanceof Promise) {
-                            overcome.then(res => {
-                                resolve(res);
-                            }, err => {
-                                reject(err);
-                            })
-                        } else {
-                            reject(overcome);
-                        }
-                    } catch (e) {
-                        reject(e);
-                    }
+                    changeState(onRejected);
                 }
             })
         }

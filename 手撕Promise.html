@@ -11,7 +11,7 @@
     <script>
         const p = new Promise((resolve,reject)=>{
             // setTimeout(() => {
-                resolve('ok');
+                reject('ok');
             // }, 1000);
             // reject('notok');
             // throw 'error';
@@ -24,6 +24,7 @@
             })
         }, err => {
             console.log(err);
+            return 123;
         })
 
         console.log(result);

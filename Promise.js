@@ -60,7 +60,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
         if (this.PromiseState === 'resolved') {
             const outcome = onResolved(this.PromiseResult);
             //判断回调返回结果是否是Promise类型
-            if(outcome instanceof Promise) {
+            if (outcome instanceof Promise) {
                 //Promise类型的数据，返回状态要和它一致
                 outcome.then(res => {
                     //如果是成功的Promise，那一定会走这个回调
@@ -69,7 +69,7 @@ Promise.prototype.then = function (onResolved, onRejected) {
                     //如果是失败的Promise，那一定会走这个回调
                     reject(err);
                 })
-            }else {
+            } else {
                 //非Promise类型，返回成功的Promise
                 resolve(outcome);
             }
@@ -77,7 +77,16 @@ Promise.prototype.then = function (onResolved, onRejected) {
             //所以任何Promise实例执行器函数出现错误，都可以直接捕获
         }
         if (this.PromiseState === 'rejected') {
-            onRejected(this.PromiseResult);
+            const outcome = onRejected(this.PromiseResult);
+            if (outcome instanceof Promise) {
+                outcome.then(res => {
+                    resolve(res);
+                }, err => {
+                    reject(err);
+                })
+            } else {
+                resolve(outcome);
+            }
         }
         //如果是异步任务（先指定回调再改变状态再执行回调）
         if (this.PromiseState === 'pending') {

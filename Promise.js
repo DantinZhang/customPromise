@@ -137,3 +137,10 @@ Promise.resolve = function(data) {
         }
     })
 }
+
+//4.reject方法封装
+Promise.reject = function(data) {
+    return new Promise((resolve, reject) => {
+        reject(data);
+    })
+}

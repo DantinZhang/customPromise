@@ -9,21 +9,12 @@
 </head>
 <body>
     <script>
-        const p = new Promise((resolve,reject)=>{
-            setTimeout(() => {
-                reject('ok');
-            }, 1000);
-            // reject('notok');
-            // throw 'error';
-        })
-
-        p.then().then(res => {
-            console.log(222);
-        }).then(res => {
-            console.log(333);
-        }).catch(err => {
-            console.log(err)
-        })
+        const p = Promise.resolve(521);
+        console.log(p)
+        const p2 = Promise.resolve(new Promise((resolve, reject) => {
+            resolve('ok');
+        }))
+        console.log(p2)
     </script>
 </body>
 </html>

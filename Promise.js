@@ -54,6 +54,12 @@ function Promise(executer) {
 
 //1.then方法的封装
 Promise.prototype.then = function (onResolved, onRejected) {
+    //判断第二个回调是否存在,没有就写个默认的
+    if(typeof onRejected !== 'function') {
+        onRejected = err => {
+            throw err;//一直往后找错误的回调
+        }
+    }
     //执行then方法返回的还是Promise
     return new Promise((resolve, reject) => {
         //公共的改变返回Promise状态的方法封装起来
@@ -102,4 +108,9 @@ Promise.prototype.then = function (onResolved, onRejected) {
             })
         }
     })
+}
+
+//2.catch方法的封装
+Promise.prototype.catch = function(onRejected) {
+    return this.then(undefined, onRejected);
 }

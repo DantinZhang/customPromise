@@ -57,8 +57,16 @@ Promise.prototype.then = function (onResolved, onRejected) {
     //判断第二个回调是否存在,没有就写个默认的
     if(typeof onRejected !== 'function') {
         onRejected = err => {
+            console.log('第二个默认回调执行');
             throw err;//一直往后找错误的回调
         }
+    }
+    //如果不写第一个回调，也能实现值的传递
+    if(typeof onResolved !== 'function') {
+        onResolved = res => {
+            console.log('第一个默认回调执行');
+            return res;
+        };
     }
     //执行then方法返回的还是Promise
     return new Promise((resolve, reject) => {

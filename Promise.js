@@ -19,9 +19,11 @@ function Promise(executer) {
         // this.callback.onResolved(data);
         // }
         if (this.callbacks.length != 0) {
-            this.callbacks.forEach(item => {
-                item.onResolved();
-            })
+            setTimeout(() => {
+                this.callbacks.forEach(item => {
+                    item.onResolved();
+                })
+            });
         }
     }
 
@@ -38,9 +40,11 @@ function Promise(executer) {
         // this.callback.onRejected(data);
         // }
         if (this.callbacks.length != 0) {
-            this.callbacks.forEach(item => {
-                item.onRejected();
-            })
+            setTimeout(() => {
+                this.callbacks.forEach(item => {
+                    item.onRejected();
+                })   
+            });
         }
     }
 
@@ -94,12 +98,16 @@ Promise.prototype.then = function (onResolved, onRejected) {
         }
         //判断同步任务下走哪个回调
         if (this.PromiseState === 'resolved') {
-            changeState(onResolved);
+            setTimeout(() => {
+                changeState(onResolved);   
+            });
             //如果抛出错误,不用再另外写try-catch,封装时写过了
             //所以任何Promise实例执行器函数出现错误，都可以直接捕获
         }
         if (this.PromiseState === 'rejected') {
-            changeState(onRejected);
+            setTimeout(() => {
+                changeState(onRejected);   
+            });
         }
         //如果是异步任务（先指定回调再改变状态再执行回调）
         if (this.PromiseState === 'pending') {

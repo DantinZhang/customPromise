@@ -9,14 +9,16 @@
 </head>
 <body>
     <script>
-        const p1 = Promise.resolve(new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve('err');
-            }, 1000);
-        }))
-        const p2 = Promise.resolve(521);
-        const p3 = Promise.resolve(666)
-        console.log(Promise.race([p1,p2,p3]));
+        const p = new Promise((resolve, reject) => {
+            resolve('ok');
+            console.log(111);
+        })
+
+        p.then(res => {
+            console.log(222);
+        })
+
+        console.log(333);
     </script>
 </body>
 </html>

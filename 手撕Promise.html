@@ -9,12 +9,12 @@
 </head>
 <body>
     <script>
-        const p = Promise.reject(521);
-        console.log(p)
-        const p2 = Promise.reject(new Promise((resolve, reject) => {
-            resolve('ok');
+        const p1 = Promise.resolve(521);
+        const p2 = Promise.resolve(new Promise((resolve, reject) => {
+            resolve('err');
         }))
-        console.log(p2)
+        const p3 = Promise.resolve(666)
+        console.log(Promise.all([p1,p2,p3]));
     </script>
 </body>
 </html>

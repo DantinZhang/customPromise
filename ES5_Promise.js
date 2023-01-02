@@ -1,3 +1,4 @@
+//ES5语法
 function Promise(executer) {
     this.PromiseState = 'pending';//默认应该是等待
     this.PromiseResult = undefined;

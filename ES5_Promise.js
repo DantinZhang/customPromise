@@ -44,7 +44,7 @@ function Promise(executer) {
             setTimeout(() => {
                 this.callbacks.forEach(item => {
                     item.onRejected();
-                })   
+                })
             });
         }
     }
@@ -60,14 +60,14 @@ function Promise(executer) {
 //1.then方法的封装
 Promise.prototype.then = function (onResolved, onRejected) {
     //判断第二个回调是否存在,没有就写个默认的
-    if(typeof onRejected !== 'function') {
+    if (typeof onRejected !== 'function') {
         onRejected = err => {
             console.log('第二个默认回调执行');
             throw err;//一直往后找错误的回调
         }
     }
     //如果不写第一个回调，也能实现值的传递
-    if(typeof onResolved !== 'function') {
+    if (typeof onResolved !== 'function') {
         onResolved = res => {
             console.log('第一个默认回调执行');
             return res;
@@ -99,16 +99,12 @@ Promise.prototype.then = function (onResolved, onRejected) {
         }
         //判断同步任务下走哪个回调
         if (this.PromiseState === 'resolved') {
-            setTimeout(() => {
-                changeState(onResolved);   
-            });
+            changeState(onResolved);
             //如果抛出错误,不用再另外写try-catch,封装时写过了
             //所以任何Promise实例执行器函数出现错误，都可以直接捕获
         }
         if (this.PromiseState === 'rejected') {
-            setTimeout(() => {
-                changeState(onRejected);   
-            });
+            changeState(onRejected);
         }
         //如果是异步任务（先指定回调再改变状态再执行回调）
         if (this.PromiseState === 'pending') {
@@ -128,38 +124,38 @@ Promise.prototype.then = function (onResolved, onRejected) {
 }
 
 //2.catch方法的封装
-Promise.prototype.catch = function(onRejected) {
+Promise.prototype.catch = function (onRejected) {
     return this.then(undefined, onRejected);
 }
 
 //3.resolve方法封装
-Promise.resolve = function(data) {
+Promise.resolve = function (data) {
     return new Promise((resolve, reject) => {
-        if(data instanceof Promise) {
+        if (data instanceof Promise) {
             data.then(res => {
                 resolve(res);
             }, err => {
                 reject(err);
             })
-        }else {
+        } else {
             resolve(data);
         }
     })
 }
 
 //4.reject方法封装
-Promise.reject = function(data) {
+Promise.reject = function (data) {
     return new Promise((resolve, reject) => {
         reject(data);
     })
 }
 
 //5.all方法封装
-Promise.all = function(promiseArr) {
+Promise.all = function (promiseArr) {
     return new Promise((resolve, reject) => {
         let flag = true; //判断是否所有都成功
         let arr = []; //存储成功的结果
-        for(let i = 0; i < promiseArr.length; i++) {
+        for (let i = 0; i < promiseArr.length; i++) {
             promiseArr[i].then(res => {
                 // arr.push(res); //这么写可能会由于异步出现顺序问题
                 arr[i] = res;  //这么写没事,是let的块级作用域效果
@@ -169,16 +165,16 @@ Promise.all = function(promiseArr) {
             })
         }
         //循环结束后，判断是否所有Promise都是成功的
-        if(flag) {
+        if (flag) {
             resolve(arr);
         }
     })
 }
 
 //6.race方法封装
-Promise.race = function(promiseArr) {
+Promise.race = function (promiseArr) {
     return new Promise((resolve, reject) => {
-        for(let i = 0; i < promiseArr.length; i++) {
+        for (let i = 0; i < promiseArr.length; i++) {
             promiseArr[i].then(res => {
                 resolve(res);
             }, err => {

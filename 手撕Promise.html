@@ -9,16 +9,15 @@
 </head>
 <body>
     <script>
-        const p = new Promise((resolve, reject) => {
+        const p1 = new Promise((resolve, reject) => {
+            reject('error');
+        })
+
+        const p2 = new Promise((resolve, reject) => {
             resolve('ok');
-            console.log(111);
         })
 
-        p.then(res => {
-            console.log(res);
-        })
-
-        console.log(333);
+        console.log(Promise.all([p1,p2]));
     </script>
 </body>
 </html>

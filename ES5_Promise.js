@@ -153,7 +153,6 @@ Promise.reject = function (data) {
 //5.all方法封装
 Promise.all = function (promiseArr) {
     return new Promise((resolve, reject) => {
-        let flag = true; //判断是否所有都成功
         let arr = []; //存储成功的结果
         for (let i = 0; i < promiseArr.length; i++) {
             promiseArr[i].then(res => {
@@ -161,13 +160,10 @@ Promise.all = function (promiseArr) {
                 arr[i] = res;  //这么写没事,是let的块级作用域效果
             }, err => {
                 reject(err);
-                flag = false;
             })
         }
-        //循环结束后，判断是否所有Promise都是成功的
-        if (flag) {
-            resolve(arr);
-        }
+        //循环结束后，如果还没更改过状态，说明全是成功，否则下面的代码无效（状态改变后就不能再变）
+        resolve(arr);
     })
 }
 

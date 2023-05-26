@@ -2,7 +2,7 @@ class Promise {
     constructor(executer) {
         this.PromiseState = 'pending';//默认应该是等待
         this.PromiseResult = undefined;
-        //定义一个属性来存放then函数的回调们
+        //定义一个属性来存放then函数的回调们。
         this.callbacks = [];
 
         //参数executer是一个立即调用的函数
